@@ -6,9 +6,11 @@ copy_to_server_and_restart_service() {
 
   echo "Deploy to $host"
 
-  rsync -az \
+  rsync -ahv --delete \
       --exclude .venv \
       --exclude .git \
+      --exclude __pycache__ \
+      --exclude *.pyc \
     $WORKSPACE/webapp/python \
     ${host}:/home/isucon/webapp/
   
