@@ -1,3 +1,4 @@
+from functools import lru_cache
 from http import HTTPStatus
 from typing import Annotated
 
@@ -8,6 +9,7 @@ from .models import Chair, Owner, User
 from .sql import engine
 
 
+@lru_cache
 def app_auth_middleware(app_session: Annotated[str | None, Cookie()] = None) -> User:
     if not app_session:
         raise HTTPException(
@@ -29,6 +31,7 @@ def app_auth_middleware(app_session: Annotated[str | None, Cookie()] = None) -> 
         return user
 
 
+@lru_cache
 def owner_auth_middleware(
     owner_session: Annotated[str | None, Cookie()] = None,
 ) -> Owner:
@@ -52,6 +55,7 @@ def owner_auth_middleware(
         return Owner.model_validate(row)
 
 
+@lru_cache
 def chair_auth_middleware(
     chair_session: Annotated[str | None, Cookie()] = None,
 ) -> Chair:
