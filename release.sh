@@ -1,4 +1,5 @@
 # ssh target host is depended on ~/.ssh/config
+WORKSPACE="/home/skokado/workspace/isucon14"
 
 copy_to_server_and_restart_service() {
   local host=$1
@@ -8,19 +9,19 @@ copy_to_server_and_restart_service() {
   rsync -az \
       --exclude .venv \
       --exclude .git \
-    /home/skokado/workspace/isucon14-kokado/webapp/python \
+    $WORKSPACE/webapp/python \
     ${host}:/home/isucon/webapp/
   
   rsync -az \
-    /home/skokado/workspace/isucon14-kokado/webapp/sql \
+    $WORKSPACE/webapp/sql \
     ${host}:/home/isucon/webapp/
 
   rsync -az \
-    /home/skokado/workspace/isucon14-kokado/env.sh \
+    $WORKSPACE/env.sh \
     ${host}:/home/isucon/
 
   rsync -az \
-    /home/skokado/workspace/isucon14-kokado/initialize.sh \
+    $WORKSPACE/initialize.sh \
     ${host}:/home/isucon/
 
   ssh $host "cd /home/isucon/webapp/python && /home/isucon/.local/bin/uv sync"
