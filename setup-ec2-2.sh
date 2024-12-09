@@ -8,6 +8,7 @@ ssh isucon2 <<EOF
   sudo sh -c "
     apt-get update && apt-get upgrade -y && \
     systemctl enable --now mysql
+    systemctl disable --now isuride-matcher.service
   "
 
 EOF
