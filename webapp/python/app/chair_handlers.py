@@ -6,6 +6,8 @@ from pydantic import BaseModel
 from sqlalchemy import text
 from ulid import ULID
 
+from app.constants import RETRY_AFTER_MS
+
 from .app_handlers import get_latest_ride_status
 from .middlewares import chair_auth_middleware
 from .models import Chair, ChairLocation, Owner, Ride, RideStatus, User
@@ -114,6 +116,16 @@ def chair_post_coordinate(
                 "latitude": req.latitude,
                 "longitude": req.longitude,
             },
+        )
+
+        # 現在の「椅子座標」も更新する
+        conn.execute(
+            text("UPDATE chairs SET current_latitude = :latitude, current_longitude = :longitude WHERE id = :id"),
+            {
+                "latitude": req.latitude,
+                "longitude": req.longitude,
+                "id": chair.id,
+            }
         )
 
         row = conn.execute(
@@ -240,7 +252,7 @@ def chair_get_notification(
             ),
             status=ride_status,
         ),
-        retry_after_ms=30,
+        retry_after_ms=RETRY_AFTER_MS,
     )
 
 
